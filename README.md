@@ -7,20 +7,31 @@ Upload any file from your terminal. Get a permanent URL instantly.
 ## Install
 
 ```bash
-yarn global add upfile-cli
+yarn global add upfilesh
 ```
 
 ## Setup
+
+### Self-signup (get an API key)
+
+```bash
+upfile signup --email your@email.com
+```
+
+This creates an account and saves your API key to `~/.upfile/config.json`.
+
+### Existing API key
 
 ```bash
 upfile config set api-key YOUR_API_KEY
 ```
 
-Get your API key at [upfile.sh](https://upfile.sh).
-
 ## Usage
 
 ```bash
+# Check storage status
+upfile status
+
 # Public — permanent URL, anyone can access
 upfile screenshot.png
 # https://cdn.upfile.sh/xK9mZ.png
@@ -38,6 +49,16 @@ upfile screenshot.png --json
 screencapture -x - | upfile
 cat file.txt | upfile --json
 ```
+
+## Upgrade
+
+When you hit the 1GB storage limit, upgrade to Pro:
+
+```bash
+upfile upgrade
+```
+
+You'll receive an email with a checkout link.
 
 ## Options
 
@@ -76,3 +97,9 @@ Config stored at `~/.upfile/config.json`.
 | Var | Description |
 |-----|-------------|
 | `UPFILE_API_KEY` | API key (overrides config file) |
+
+## Self-hosting
+
+Deploy your own upfile instance on Cloudflare Workers:
+
+[github.com/upfilesh/worker](https://github.com/upfilesh/worker)
