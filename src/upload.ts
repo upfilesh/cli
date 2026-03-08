@@ -34,13 +34,23 @@ export async function getStatus(): Promise<{ tier: string; storage_used_gb: stri
   return data;
 }
 
-export async function getUpgradeUrl(): Promise<{ checkout_url?: string; message: string; price?: string }> {
+export async function getUpgradeUrl(notify = false): Promise<{ checkout_url?: string; checkout_id?: string; client_secret?: string; message: string; price?: string; self_pay?: boolean }> {
   const { apiKey, endpoint } = getAuth();
-  const res = await fetch(`${endpoint}/upgrade`, {
+  const url = notify ? `${endpoint}/upgrade?notify=true` : `${endpoint}/upgrade`;
+  const res = await fetch(url, {
     headers: { Authorization: `Bearer ${apiKey}` },
   });
   if (!res.ok) throw new Error(`Upgrade check failed (${res.status}): ${await res.text()}`);
-  return res.json() as Promise<{ checkout_url?: string; message: string; price?: string }>;
+  return res.json() as Promise<{ checkout_url?: string; checkout_id?: string; client_secret?: string; message: string; price?: string; self_pay?: boolean }>;
+}
+
+export async function verifyUpgrade(sessionId: string): Promise<{ verified: boolean; status?: string; tier?: string; message: string }> {
+  const { apiKey, endpoint } = getAuth();
+  const res = await fetch(`${endpoint}/upgrade/verify?session=${sessionId}`, {
+    headers: { Authorization: `Bearer ${apiKey}` },
+  });
+  if (!res.ok) throw new Error(`Verify failed (${res.status}): ${await res.text()}`);
+  return res.json() as Promise<{ verified: boolean; status?: string; tier?: string; message: string }>;
 }
 
 export async function uploadFile(filePath: string, opts: UploadOptions): Promise<UploadResponse> {
@@ -59,7 +69,12 @@ export async function uploadFile(filePath: string, opts: UploadOptions): Promise
     const err = await res.json().catch(async () => ({ error: await res.text() }));
     const errorObj = err as { error?: string; storage_used_gb?: string; limit_gb?: string; message?: string };
     if (errorObj.error?.includes("Storage limit")) {
-      throw new Error(`Storage limit reached (${errorObj.storage_used_gb}GB / ${errorObj.limit_gb}GB). ${errorObj.message}`);
+      throw new Error(
+        `Storage limit reached (${errorObj.storage_used_gb}GB / ${errorObj.limit_gb}GB).\n` +
+        `Options:\n` +
+        `  • upfile upgrade --self-pay    # Pay with your AgentCard\n` +
+        `  • upfile upgrade --notify      # Ask owner to pay`
+      );
     }
     throw new Error(`Upload failed (${res.status}): ${errorObj.error || await res.text()}`);
   }

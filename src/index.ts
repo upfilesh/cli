@@ -1,5 +1,5 @@
 import path from "path";
-import { uploadFile, uploadStdin, listFiles, deleteFile, signup, getStatus, getUpgradeUrl } from "./upload.js";
+import { uploadFile, uploadStdin, listFiles, deleteFile, signup, getStatus, getUpgradeUrl, verifyUpgrade } from "./upload.js";
 import { saveConfig, loadConfig } from "./config.js";
 import type { Visibility } from "./types.js";
 
@@ -49,12 +49,38 @@ async function main() {
     return;
   }
 
-  // upfile upgrade
+  // upfile upgrade [--self-pay|--notify|--verify <session>]
   if (cmd === "upgrade") {
-    const result = await getUpgradeUrl();
+    const selfPay = hasFlag("self-pay");
+    const notify = hasFlag("notify");
+    const verifySession = flag("verify");
+
+    if (verifySession) {
+      // Verify payment completed
+      const result = await verifyUpgrade(verifySession);
+      if (result.verified) {
+        console.log(`✓ ${result.message}`);
+        console.log(`Tier: ${result.tier}`);
+      } else {
+        console.log(`⏳ ${result.message}`);
+        console.log(`Status: ${result.status}`);
+      }
+      return;
+    }
+
+    // Get checkout URL
+    const result = await getUpgradeUrl(notify);
     if (result.checkout_url) {
-      console.log(`Upgrade link: ${result.checkout_url}`);
-      console.log(`Sent to: ${result.message}`);
+      console.log(`Checkout URL: ${result.checkout_url}`);
+      if (result.self_pay) {
+        console.log("\n👉 Self-pay mode:");
+        console.log("  1. Open the URL above in your browser");
+        console.log("  2. Fill in your payment details");
+        console.log("  3. After payment, run:");
+        console.log(`     upfile upgrade --verify ${result.checkout_id}`);
+      } else if (notify) {
+        console.log(`\n📧 Owner notified: ${result.message}`);
+      }
     } else {
       console.log("Manual upgrade:");
       console.log(result.message);
@@ -119,7 +145,7 @@ async function main() {
         "Usage:",
         "  upfile signup --email <email> [--owner-email <email>]  create account",
         "  upfile status                                           check storage",
-        "  upfile upgrade                                          get upgrade link",
+        "  upfile upgrade [--self-pay|--notify|--verify <id>]       get upgrade link",
         "  upfile <file>                                          upload file (public)",
         "  upfile <file> --private                               private file",
         "  upfile <file> --expiry <seconds>                     expiring URL",
