@@ -1,5 +1,8 @@
 # upfile-cli
 
+[![npm version](https://img.shields.io/npm/v/upfilesh.svg)](https://www.npmjs.com/package/upfilesh)
+[![GitHub release](https://img.shields.io/github/v/release/upfilesh/cli.svg)](https://github.com/upfilesh/cli/releases)
+
 Upload any file from your terminal. Get a permanent URL instantly.
 
 → [upfile.sh](https://upfile.sh)
@@ -67,6 +70,7 @@ You'll receive an email with a checkout link.
 | `--private` | Private file, requires auth to access |
 | `--expiry <sec>` | Expiring URL with TTL in seconds |
 | `--json` | Full JSON response (url, id, visibility, expires_at) |
+| `-v`, `--version` | Print CLI version |
 
 ## JSON response
 
