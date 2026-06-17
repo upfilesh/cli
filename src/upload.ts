@@ -8,13 +8,18 @@ import type { UploadOptions, UploadResponse } from "./types.js";
 function getAuth() {
   const config = loadConfig();
   const apiKey = config.apiKey || process.env.UPFILE_API_KEY;
-  const endpoint = config.endpoint || DEFAULT_ENDPOINT;
+  const endpoint = getEndpoint();
   if (!apiKey) throw new Error("No API key. Run: upfile signup --email your@email.com");
   return { apiKey, endpoint };
 }
 
+function getEndpoint() {
+  const config = loadConfig();
+  return config.endpoint || DEFAULT_ENDPOINT;
+}
+
 export async function signup(email: string, ownerEmail?: string): Promise<{ api_key: string; tier: string; storage_limit_gb: number; message: string }> {
-  const { endpoint } = getAuth();
+  const endpoint = getEndpoint();
   const res = await fetch(`${endpoint}/signup`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
