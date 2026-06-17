@@ -1,6 +1,6 @@
 {
   "name": "upfilesh",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Instant file uploads from the command line — upfile.sh",
   "bin": {
     "upfile": "bin/upfile"
@@ -13,7 +13,7 @@
     "README.md"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "node scripts/write-version.js && tsc",
     "dev": "ts-node src/index.ts",
     "prepublishOnly": "yarn build"
   },

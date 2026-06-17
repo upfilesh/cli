@@ -1,6 +1,7 @@
 import path from "path";
 import { uploadFile, uploadStdin, listFiles, deleteFile, signup, getStatus, getUpgradeUrl, verifyUpgrade } from "./upload.js";
 import { saveConfig, loadConfig } from "./config.js";
+import { VERSION } from "./version.js";
 import type { Visibility } from "./types.js";
 
 const args = process.argv.slice(2);
@@ -23,6 +24,11 @@ function formatSize(bytes: number): string {
 
 async function main() {
   const cmd = args[0];
+
+  if (cmd === "-v" || cmd === "--version" || cmd === "version") {
+    console.log(VERSION);
+    return;
+  }
 
   // upfile signup --email me@example.com [--owner-email owner@example.com]
   if (cmd === "signup") {
