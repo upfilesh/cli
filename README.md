@@ -10,7 +10,7 @@ Upload any file from your terminal. Get a permanent URL instantly.
 ## Install
 
 ```bash
-yarn global add upfilesh
+npm install -g upfilesh
 ```
 
 ## Setup
