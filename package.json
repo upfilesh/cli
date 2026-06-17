@@ -3,9 +3,10 @@
   "version": "0.2.1",
   "description": "Instant file uploads from the command line — upfile.sh",
   "bin": {
-    "upfile": "./bin/upfile"
+    "upfile": "bin/upfile"
   },
   "main": "dist/index.js",
+  "packageManager": "yarn@1.22.22",
   "files": [
     "bin/",
     "dist/",
@@ -29,7 +30,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/upfilesh/cli.git"
+    "url": "git+https://github.com/upfilesh/cli.git"
   },
   "bugs": {
     "url": "https://github.com/upfilesh/cli/issues"
