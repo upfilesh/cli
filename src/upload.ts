@@ -7,7 +7,7 @@ import type { UploadOptions, UploadResponse } from "./types.js";
 
 function getAuth() {
   const config = loadConfig();
-  const apiKey = config.apiKey || process.env.UPFILE_API_KEY;
+  const apiKey = process.env.UPFILE_API_KEY || config.apiKey;
   const endpoint = getEndpoint();
   if (!apiKey) throw new Error("No API key. Run: upfile signup --email your@email.com");
   return { apiKey, endpoint };

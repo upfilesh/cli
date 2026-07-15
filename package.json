@@ -1,6 +1,6 @@
 {
   "name": "upfilesh",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Instant file uploads from the command line — upfile.sh",
   "bin": {
     "upfile": "bin/upfile"
